@@ -2,13 +2,11 @@
 FROM node:22-alpine AS builder
 WORKDIR /app
 
-# キャッシュ最適化のために依存関係を先にコピー
-COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
+COPY package.json ./
+RUN npm install
 
-# ソースコードをコピーしてビルド
 COPY . .
-RUN pnpm build
+RUN npm run build
 
 # 実行ステージ
 FROM node:22-alpine AS runner
