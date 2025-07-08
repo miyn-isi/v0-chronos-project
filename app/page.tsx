@@ -351,6 +351,11 @@ export default function Home() {
   const totalResults = apiResults.length;
   const totalPages = Math.ceil(totalResults / resultsPerPage);
 
+  // ページごとの表示範囲を計算
+  const startIndex = (currentPage - 1) * resultsPerPage;
+  const endIndex = startIndex + resultsPerPage;
+  const pagedResults = filteredResults.slice(startIndex, endIndex);
+
   function getEmojiCategory(tooltipEmoji: string): React.ReactNode {
     // カテゴリー名を返す（簡易実装: emojiDescriptionsの説明文から推測）
     if (!tooltipEmoji) return null;
@@ -640,7 +645,7 @@ export default function Home() {
               ))}
             </div>
             <div className="grid grid-cols-1 gap-4">
-              {filteredResults.map((item: any, i: number) => {
+              {pagedResults.map((item: any, i: number) => {
                 const doc = item.document?.derivedStructData || {};
                 const title = doc.title || doc.htmlTitle || "No title";
                 const url = doc.link || doc.url || item.url || "#";
