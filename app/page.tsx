@@ -525,6 +525,7 @@ export default function Home() {
                   <span className="text-xs text-gray-400 mt-1">（省略可）</span>
                 )}
               </motion.div>
+              <div className="mx-4 text-3xl text-purple-500">=</div>
               {/* 検索ボタン */}
               <motion.button
                 className="ml-4 w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-md"
