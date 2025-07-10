@@ -480,6 +480,21 @@ export default function Home() {
         {/* ホーム画面 */}
         {viewMode === "home" && (
           <>
+            {/* 地域検索に戻るボタン */}
+            <button
+              className="mb-4 px-4 py-2 rounded bg-white text-gray-700 shadow border border-gray-200 flex items-center gap-2"
+              onClick={() => {
+                setViewMode("top");
+                setFirstEmoji(null);
+                setSecondEmoji(null);
+                setApiResults([]);
+                setCurrentPage(1);
+              }}
+            >
+              <span className="text-xl">⬅️</span>
+              地域選択に戻る
+            </button>
+
             {/* 絵文字選択インジケーター */}
             <div className="flex items-center justify-center mb-6 mt-2">
               {/* 1つ目 */}
