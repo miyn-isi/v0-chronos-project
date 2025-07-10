@@ -17,7 +17,7 @@ const AiChatModal: React.FC<AiChatModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black/50 flex items-end justify-center p-4 z-30">
       <motion.div
-        className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-xl"
+        className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-xl mb-14"
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         transition={{ type: "spring", damping: 25 }}
