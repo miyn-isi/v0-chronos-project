@@ -61,13 +61,6 @@ export default function Home() {
     "🏫": "教育・学習支援：学校教育や生涯学習に関する情報やサービス",
   };
 
-  // 検索実行
-  const executeSearch = () => {
-    if (firstEmoji && secondEmoji) {
-      setCurrentPage(1); // ページをリセット
-    }
-  };
-
   // 検索履歴から検索を実行する関数
   const searchFromHistory = (first: string, second: string) => {
     setFirstEmoji(first);
@@ -95,10 +88,10 @@ export default function Home() {
     if (!firstEmoji) {
       setFirstEmoji(emoji);
       setIsSelectingSecond(true);
+      setSecondEmoji(null); // 2つ目をリセット
     } else if (isSelectingSecond) {
       setSecondEmoji(emoji);
       setIsSelectingSecond(false);
-      executeSearch();
     }
   };
 
@@ -284,11 +277,14 @@ export default function Home() {
     setIsDraggingOver(null);
   };
 
-  // API検索実行（絵文字2個選択時の検索ボタンから呼び出し）
-  const executeApiSearch = async () => {
-    if (!firstEmoji || !secondEmoji) return;
+  // 絵文字検索の実行
+  const handleSearch = async () => {
+    if (!firstEmoji) return;
     setApiResults([]);
-    const query = `${emojiDescriptions[firstEmoji]?.split("：")[0] || firstEmoji} ${emojiDescriptions[secondEmoji]?.split("：")[0] || secondEmoji}`;
+
+    const query = secondEmoji
+      ? `${emojiDescriptions[firstEmoji]?.split("：")[0] || firstEmoji} ${emojiDescriptions[secondEmoji]?.split("：")[0] || secondEmoji}`
+      : emojiDescriptions[firstEmoji]?.split("：")[0] || firstEmoji;
 
     // 選択された検索エンジンを取得
     const engine = selectedPref;
@@ -464,9 +460,9 @@ export default function Home() {
             <div className="flex items-center justify-center mb-6 mt-2">
               <motion.div
                 ref={firstDropRef}
-                className={`w-20 h-20 rounded-2xl flex items-center justify-center text-4xl 
-                  ${firstEmoji ? "bg-white shadow-md" : "bg-white/50 border-2 border-dashed"} 
-                  ${isDraggingOver === "first" ? "border-blue-400 bg-blue-50" : "border-purple-300"}`}
+                className={`w-20 h-20 rounded-2xl flex flex-col items-center justify-center text-4xl bg-white shadow-md border-2 border-purple-300
+      ${isDraggingOver === "first" ? "ring-4 ring-blue-300" : ""}
+    `}
                 onMouseOver={() => handleDragOver("first")}
                 onMouseLeave={handleDragLeave}
                 whileHover={{ scale: 1.05 }}
@@ -476,32 +472,33 @@ export default function Home() {
               <div className="mx-4 text-3xl text-purple-500">+</div>
               <motion.div
                 ref={secondDropRef}
-                className={`w-20 h-20 rounded-2xl flex items-center justify-center text-4xl 
-                  ${secondEmoji ? "bg-white shadow-md" : "bg-white/50 border-2 border-dashed"} 
-                  ${isDraggingOver === "second" ? "border-blue-400 bg-blue-50" : "border-purple-300"} 
-                  ${!firstEmoji ? "opacity-50" : ""}`}
+                className={`w-20 h-20 rounded-2xl flex flex-col items-center justify-center text-4xl border-2 border-dashed bg-white/80 border-purple-300
+      ${isDraggingOver === "second" ? "ring-4 ring-blue-300" : ""}
+    `}
                 onMouseOver={() => handleDragOver("second")}
                 onMouseLeave={handleDragLeave}
                 whileHover={{ scale: 1.05 }}
               >
-                {secondEmoji || "❓"}
+                <span>{secondEmoji || "❓"}</span>
+                {!secondEmoji && (
+                  <span className="text-xs text-gray-400 mt-1">（省略可）</span>
+                )}
               </motion.div>
-              {secondEmoji && (
-                <div className="mx-4 text-3xl text-purple-500">＝</div>
-              )}
-              {firstEmoji && secondEmoji && (
-                <>
-                  <motion.button
-                    className="ml-4 w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-md"
-                    onClick={executeApiSearch}
-                    whileTap={{ scale: 0.9 }}
-                    whileHover={{ scale: 1.1 }}
-                    aria-label="APIで検索"
-                  >
-                    <span className="text-white text-xl">🔍</span>
-                  </motion.button>
-                </>
-              )}
+              <div className="mx-4 text-3xl text-purple-500">=</div>
+              <motion.button
+                className="ml-4 w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-md"
+                onClick={handleSearch}
+                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.1 }}
+                aria-label="APIで検索"
+                disabled={!firstEmoji}
+                style={{
+                  opacity: firstEmoji ? 1 : 0.5,
+                  pointerEvents: firstEmoji ? "auto" : "none",
+                }}
+              >
+                <span className="text-white text-xl">🔍</span>
+              </motion.button>
             </div>
 
             {/* 絵文字選択グリッド */}
@@ -601,17 +598,25 @@ export default function Home() {
             <div className="flex flex-col items-center justify-center mb-6 bg-white p-3 rounded-xl shadow-sm">
               <div className="flex items-center">
                 <span className="text-3xl">{firstEmoji}</span>
-                <span className="mx-2 text-xl text-purple-500">+</span>
-                <span className="text-3xl">{secondEmoji}</span>
+                {secondEmoji && (
+                  <>
+                    <span className="mx-2 text-xl text-purple-500">+</span>
+                    <span className="text-3xl">{secondEmoji}</span>
+                  </>
+                )}
               </div>
               <p className="text-sm text-gray-600 mt-2">
                 {(firstEmoji &&
                   emojiDescriptions[firstEmoji]?.split("：")[0]) ||
-                  firstEmoji}{" "}
-                ×{" "}
-                {(secondEmoji &&
-                  emojiDescriptions[secondEmoji]?.split("：")[0]) ||
-                  secondEmoji}{" "}
+                  firstEmoji}
+                {secondEmoji && (
+                  <>
+                    {" × "}
+                    {(secondEmoji &&
+                      emojiDescriptions[secondEmoji]?.split("：")[0]) ||
+                      secondEmoji}
+                  </>
+                )}
                 の検索結果
               </p>
 
