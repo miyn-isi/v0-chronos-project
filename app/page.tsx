@@ -277,11 +277,14 @@ export default function Home() {
     setIsDraggingOver(null);
   };
 
-  // API検索実行（絵文字2個選択時の検索ボタンから呼び出し）
-  const executeApiSearch = async () => {
-    if (!firstEmoji || !secondEmoji) return;
+  // 絵文字検索の実行
+  const handleSearch = async () => {
+    if (!firstEmoji) return;
     setApiResults([]);
-    const query = `${emojiDescriptions[firstEmoji]?.split("：")[0] || firstEmoji} ${emojiDescriptions[secondEmoji]?.split("：")[0] || secondEmoji}`;
+
+    const query = secondEmoji
+      ? `${emojiDescriptions[firstEmoji]?.split("：")[0] || firstEmoji} ${emojiDescriptions[secondEmoji]?.split("：")[0] || secondEmoji}`
+      : emojiDescriptions[firstEmoji]?.split("：")[0] || firstEmoji;
 
     // 選択された検索エンジンを取得
     const engine = selectedPref;
@@ -295,33 +298,6 @@ export default function Home() {
     if (!data.error) {
       setApiResults(data.results || data.documents || data || []);
       setViewMode("searchResults");
-    }
-  };
-
-  const executeSingleEmojiSearch = async (emoji: string) => {
-    setApiResults([]);
-    const query = emojiDescriptions[emoji]?.split("：")[0] || emoji;
-
-    // 選択された検索エンジンを取得
-    const engine = selectedPref;
-
-    const res = await fetch("/api/search", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query, engine }),
-    });
-    const data = await res.json();
-    if (!data.error) {
-      setApiResults(data.results || data.documents || data || []);
-      setViewMode("searchResults");
-    }
-  };
-
-  const handleSearch = () => {
-    if (firstEmoji && secondEmoji) {
-      executeApiSearch();
-    } else if (firstEmoji) {
-      executeSingleEmojiSearch(firstEmoji);
     }
   };
 
