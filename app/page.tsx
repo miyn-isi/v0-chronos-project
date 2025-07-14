@@ -482,7 +482,6 @@ export default function Home() {
           <>
             {/* 絵文字選択インジケーター */}
             <div className="flex items-center justify-center mb-6 mt-2">
-              {/* 1つ目 */}
               <motion.div
                 ref={firstDropRef}
                 className={`w-20 h-20 rounded-2xl flex flex-col items-center justify-center text-4xl bg-white shadow-md border-2 border-purple-300
@@ -495,7 +494,6 @@ export default function Home() {
                 {firstEmoji || "❓"}
               </motion.div>
               <div className="mx-4 text-3xl text-purple-500">+</div>
-              {/* 2つ目 */}
               <motion.div
                 ref={secondDropRef}
                 className={`w-20 h-20 rounded-2xl flex flex-col items-center justify-center text-4xl border-2 border-dashed bg-white/80 border-purple-300
@@ -511,7 +509,6 @@ export default function Home() {
                 )}
               </motion.div>
               <div className="mx-4 text-3xl text-purple-500">=</div>
-              {/* 検索ボタン */}
               <motion.button
                 className="ml-4 w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-md"
                 onClick={handleSearch}
